@@ -30,6 +30,8 @@ public class GradeQuery {
 
     private static final String password = "密码";
 
+    private static final String mail = "邮箱地址";
+
     private static final OkHttpClient client = new OkHttpClient();
 
     private static int size;
@@ -65,7 +67,7 @@ public class GradeQuery {
                         lastSize = size;
                         System.out.println("成绩已更新");
                         // 发送邮箱通知
-                        MailUtil.sentSimpleMail(result, "你的邮箱");
+                        MailUtil.sentSimpleMail(result, mail);
                     }else {
                         System.out.println("成绩未更新！");
                     }
