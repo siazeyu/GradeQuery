@@ -64,7 +64,8 @@ public class GradeQuery {
                     if (size != lastSize){
                         lastSize = size;
                         System.out.println("成绩已更新");
-                        MailUtil.sentSimpleMail(result, "siaze@qq.com");
+                        // 发送邮箱通知
+                        MailUtil.sentSimpleMail(result, "你的邮箱");
                     }else {
                         System.out.println("成绩未更新！");
                     }
@@ -86,12 +87,20 @@ public class GradeQuery {
             }
         };
 
+        // 1000为 1秒钟后执行 每10分钟查询一次
         new Timer().schedule(task, 1000, 10 * 60 * 1000);
 
 
     }
 
+
+    /**
+     * 登录
+     * @return 登录成功的cookie
+     * @throws IOException
+     */
     private static String getCookie() throws IOException {
+
         Request index = new Request.Builder().url(indexUrl).build();
         String cookie = client.newCall(index).execute().header("Set-Cookie");
 
@@ -103,6 +112,7 @@ public class GradeQuery {
     }
 
     private static Document getGrade(String cookie) throws IOException {
+        // 查询 2021-2022-2 学期的所有成绩
         RequestBody queryBody = new FormBody.Builder().add("kksj", "2021-2022-2")
                 .add("xsfs", "all").build();
         Request queryRequest = new Request.Builder().addHeader("Cookie", cookie).post(queryBody).url(queryUrl).build();
@@ -110,6 +120,12 @@ public class GradeQuery {
         return Jsoup.parse(data);
     }
 
+    /**
+     * 输出为网页
+     * @param table 成绩表格
+     * @return 转化后的网页
+     * @throws Exception
+     */
     private static String format(Element table) throws Exception {
 
         Elements trs;
